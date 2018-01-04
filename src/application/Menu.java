@@ -46,14 +46,16 @@ public class Menu {
 		window.setTitle("DATOS"); 
 		window.setScene(scene); // Creo la ventana
 		int opcion = 0;
-		ventanaRecogidaDatos("¿Cuantos jugadores participarán? [1 a 4]: ");
-		valorInt = Integer.parseInt(valorEntradaDatos.getText());
-		opcion = valorInt;
 		while (opcion < 1 || opcion > 4) {
-			ventanaRecogidaDatos("Por favor introduzca un número del 1 al 4: ");
-			valorInt = Integer.parseInt(valorEntradaDatos.getText());
-			opcion = valorInt;
+			try {
+				ventanaRecogidaDatos("¿Cuantos jugadores participarán? [1 a 4]: ");
+				valorInt = Integer.parseInt(valorEntradaDatos.getText());
+				opcion = valorInt;
+			} catch (NumberFormatException e) {
+				opcion = 0;
+			}
 		}
+
 		Jugador[] resultado = new Jugador[opcion];		
 		for (int i = 0; i < resultado.length; i++) { //recorremos el array resultado para crear la cantidad de jugadores seleccionada
 			ventanaRecogidaDatos("Nombre del jugador " + i + ":");
@@ -69,7 +71,7 @@ public class Menu {
 		//el siguiente código es para prevenir que tecleemos algo que no sea un numero cuando nos pide las coordenadas
 		//el primer do while espera a que tanto la x como la y no de error
 		//el do while del interior llega una vez la x es correcta se queda chequeando la y.
-		//si solo pongo un du while y acierto la x pero fallo en la y, me pediría denuevo ambas coordenadas.
+		//si solo pongo un do while y acierto la x pero fallo en la y, me pediría denuevo ambas coordenadas.
 		do {
 			try {
 				ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord X");

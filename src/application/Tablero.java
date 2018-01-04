@@ -7,6 +7,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class Tablero {
@@ -61,20 +63,23 @@ public class Tablero {
 		Jugador[] jugadores = Partida.getParticipantes();
 		Label turno = new Label("TURNO");
 		Label puntuacion = new Label("PUNTUACIÓN");
-		Label jugador1 = new Label(jugadores[0].getNombre() + " :" + jugadores[0].getPuntuacion());
-		Label jugador2 = new Label(jugadores[1].getNombre() + " :" + jugadores[1].getPuntuacion());
-		//turno.prefWidthProperty().bind(tableroFxStage.widthProperty());
-		//puntuacion.prefWidthProperty().bind(tableroFxStage.widthProperty());
-		tableroFxAnchor = new AnchorPane(turno,puntuacion,jugador1,jugador2);
+		turno.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+		puntuacion.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 		tableroFxAnchor.setTopAnchor(turno, 5.0);
 		tableroFxAnchor.setLeftAnchor(turno, 5.0);
 		tableroFxAnchor.setTopAnchor(puntuacion, 5.0);
 		tableroFxAnchor.setRightAnchor(puntuacion, 5.0);
 		
-		tableroFxAnchor.setTopAnchor(jugador1, 15.0);
-		tableroFxAnchor.setRightAnchor(jugador1, 10.0);
-		tableroFxAnchor.setTopAnchor(jugador2, 25.0);
-		tableroFxAnchor.setRightAnchor(jugador2, 10.0);
+		tableroFxAnchor = new AnchorPane(turno,puntuacion);
+		Label[] labelJugadores = new Label[jugadores.length];
+		for (int i = 0; i < jugadores.length; i++) {
+			labelJugadores[i] = new Label(jugadores[i].getNombre() + " : " + jugadores[i].getPuntuacion());
+			labelJugadores[i].setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+			tableroFxAnchor.setTopAnchor(labelJugadores[i], 30.0 + i*15);
+			tableroFxAnchor.setRightAnchor(labelJugadores[i], 30.0);
+			tableroFxAnchor.getChildren().add(labelJugadores[i]);
+		}
+
 	}
 	
 	public static void verTableroFx() {
@@ -88,8 +93,8 @@ public class Tablero {
 		tableroFxGrid.setGridLinesVisible(true);
 		tableroFxGrid.setHgap(2);
 		tableroFxGrid.setVgap(2);
-		tableroFxGrid.setTranslateX(100.0);
-		tableroFxGrid.setTranslateY(100.0);
+		tableroFxGrid.setTranslateX(75.0);
+		tableroFxGrid.setTranslateY(50.0);
 		
 		
 		tableroFxStage.setTitle("HUNDIR LA FLOTA");
@@ -103,7 +108,7 @@ public class Tablero {
 	
 			for (int i = 0; i < casillasTablero.length; i++) {
 				for (int j = 0; j < casillasTablero.length; j++) {
-					casillasTablero[j][i] = new Rectangle(0,0,20,20);
+					casillasTablero[j][i] = new Rectangle(0,0,25,25);
 					try {
 						casillasTablero[j][i].setFill(Color.BLUE);
 						if (Tablero.getPosicionEnTablero(i, j).getSize() == 0) {
