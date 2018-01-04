@@ -3,17 +3,22 @@ package application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class Menu {
-	int turno= 0;	
+	static int turno= 0;	
 	Stage window = new Stage();
-	StackPane stack = new StackPane();
-	Scene scene = new Scene(stack);
+	AnchorPane Anchor = new AnchorPane();
+	Scene scene = new Scene(Anchor);
 	TextField valorEntradaDatos;
 	TextField cantJugadores;
 	String valorString;
@@ -24,15 +29,25 @@ public class Menu {
 		window.setX(50);
 		window.setY(100);
 		Label label = new Label(texto);
-		valorEntradaDatos= new TextField();
-		stack.setMargin(valorEntradaDatos, new Insets (80,10,10,10));
+		label.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+		label.setPadding(new Insets(10,10,10,10));
+		valorEntradaDatos = new TextField();
+		valorEntradaDatos.setAlignment(Pos.CENTER);
+		
+		Anchor.setTopAnchor(label, 0.0);
+		Anchor.setTopAnchor(valorEntradaDatos, 40.0);
+		Anchor.setLeftAnchor(valorEntradaDatos, 20.0);
+		Anchor.setRightAnchor(valorEntradaDatos, 20.0);
+		Anchor.setBottomAnchor(valorEntradaDatos, 20.0);
+	
+		
 
-		stack.getChildren().addAll(label, valorEntradaDatos);
+		Anchor.getChildren().addAll(label, valorEntradaDatos);
 		valorEntradaDatos.setOnAction(new EventHandler<ActionEvent>() {		 
             @Override
             public void handle(ActionEvent event) {
             	valorString = valorEntradaDatos.getText();        	
-            	stack.getChildren().clear();           
+            	Anchor.getChildren().clear();           
             	window.close();
             }
         });
@@ -58,8 +73,12 @@ public class Menu {
 
 		Jugador[] resultado = new Jugador[opcion];		
 		for (int i = 0; i < resultado.length; i++) { //recorremos el array resultado para crear la cantidad de jugadores seleccionada
-			ventanaRecogidaDatos("Nombre del jugador " + i + ":");
-			resultado[i] = new Jugador(i,valorString.toUpperCase()); //creamos el jugador con su nombre y directamente lo metemos en el array resultado
+			do {
+				ventanaRecogidaDatos("Nombre del jugador " + i + ":");
+				if (valorString.length() < 20) {
+					resultado[i] = new Jugador(i,valorString.toUpperCase()); //creamos el jugador con su nombre y directamente lo metemos en el array resultado
+				}				
+			} while (valorString.length() > 20);
 		}
 		return resultado;
 	}
@@ -76,20 +95,28 @@ public class Menu {
 			try {
 				ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord X");
 				valorInt = Integer.parseInt(valorEntradaDatos.getText());
-				int x = valorInt;
-				error = false;
-				do {
-					try {
-						ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord Y");
-						valorInt = Integer.parseInt(valorEntradaDatos.getText());
-						int y = valorInt;
-						error = false;
-						jugador.atacar(x, y);
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						error = true;
-					}
-				} while (error);
+				if (valorInt < 0 || valorInt > 9) { //hay que validar que los numeros de coord esten en tre 0 y 9
+					error = true;
+				} else {
+					int x = valorInt;
+					error = false;
+					do {
+						try {
+							ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord Y");
+							valorInt = Integer.parseInt(valorEntradaDatos.getText());
+							if (valorInt < 0 || valorInt > 9) {
+								error = true;
+							} else {
+								int y = valorInt;
+								error = false;
+								jugador.atacar(x, y);
+							}
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							error = true;
+						}
+					} while (error);
+				}
 			} catch (NumberFormatException e) {
 				error = true;
 			}

@@ -1,5 +1,7 @@
 package application;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -15,11 +17,12 @@ public class Tablero {
 	
 	private static Barco [][] tablero;
 	
-	static BorderPane tableroFxBorder = new BorderPane();
-	static GridPane tableroFxGrid = new GridPane();
-	static AnchorPane tableroFxAnchor;
+	static BorderPane tableroFxPrincipal = new BorderPane();
+	static GridPane tableroFxRejilla = new GridPane();
+	static AnchorPane tableroFxMarcador;
+	static AnchorPane tableroFxLeyenda;
 	static Stage tableroFxStage = new Stage();
-	static Scene tableroFxScene = new Scene(tableroFxBorder,400,400);
+	static Scene tableroFxScene = new Scene(tableroFxPrincipal,600,450);
 
 	public Tablero(int size) {	
 		tablero = new Barco[size][size];
@@ -60,41 +63,76 @@ public class Tablero {
 	}
 	
 	public static void marcador() {
+		Color[] colores = {Color.BLUE,Color.RED,Color.GREEN,Color.PINK};
 		Jugador[] jugadores = Partida.getParticipantes();
 		Label turno = new Label("TURNO");
 		Label puntuacion = new Label("PUNTUACIÓN");
+		Label contadorTurno = new Label(Menu.turno+"");
 		turno.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+		contadorTurno.setFont(Font.font("Arial", FontWeight.BOLD, 30));
+		contadorTurno.setTextFill(Color.BLUE);
 		puntuacion.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
-		tableroFxAnchor.setTopAnchor(turno, 5.0);
-		tableroFxAnchor.setLeftAnchor(turno, 5.0);
-		tableroFxAnchor.setTopAnchor(puntuacion, 5.0);
-		tableroFxAnchor.setRightAnchor(puntuacion, 5.0);
+		tableroFxMarcador.setTopAnchor(turno, 5.0);
+		tableroFxMarcador.setLeftAnchor(turno, 5.0);
+		tableroFxMarcador.setTopAnchor(puntuacion, 5.0);
+		tableroFxMarcador.setRightAnchor(puntuacion, 5.0);
+		tableroFxMarcador.setTopAnchor(contadorTurno, 25.0);
+		tableroFxMarcador.setLeftAnchor(contadorTurno, 25.0);
 		
-		tableroFxAnchor = new AnchorPane(turno,puntuacion);
+		
+		tableroFxMarcador = new AnchorPane(turno,puntuacion,contadorTurno);
+		
 		Label[] labelJugadores = new Label[jugadores.length];
 		for (int i = 0; i < jugadores.length; i++) {
 			labelJugadores[i] = new Label(jugadores[i].getNombre() + " : " + jugadores[i].getPuntuacion());
 			labelJugadores[i].setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-			tableroFxAnchor.setTopAnchor(labelJugadores[i], 30.0 + i*15);
-			tableroFxAnchor.setRightAnchor(labelJugadores[i], 30.0);
-			tableroFxAnchor.getChildren().add(labelJugadores[i]);
+			labelJugadores[i].setTextFill(colores[i]);
+			tableroFxMarcador.setTopAnchor(labelJugadores[i], 30.0 + i*15);
+			tableroFxMarcador.setRightAnchor(labelJugadores[i], 30.0);
+			tableroFxMarcador.getChildren().add(labelJugadores[i]);
 		}
+	}
+	
+	public static void leyenda() {
+		Label agua = new Label("Agua");
+		Rectangle aguaR = new Rectangle(0,0,15,15);
+		aguaR.setFill(Color.WHITE);
+		aguaR.setStroke(Color.BLACK);
+		Label tocado = new Label("Tocado");
+		Rectangle tocadoR = new Rectangle(0,0,15,15);
+		tocadoR.setFill(Color.BLACK);
+		Label hundido = new Label("Hundido");
+		Rectangle hundidoR = new Rectangle(0,0,15,15);
+		hundidoR.setFill(Color.RED);
 
+		tableroFxLeyenda.setLeftAnchor(agua, 40.0);
+		tableroFxLeyenda.setBottomAnchor(agua, 30.0);
+		tableroFxLeyenda.setLeftAnchor(aguaR, 75.0);
+		tableroFxLeyenda.setLeftAnchor(tocado, 100.0);
+		tableroFxLeyenda.setLeftAnchor(tocadoR, 145.0);
+		tableroFxLeyenda.setLeftAnchor(hundido, 170.0);
+		tableroFxLeyenda.setLeftAnchor(hundidoR, 225.0);
+		
+		tableroFxLeyenda = new AnchorPane();
+		tableroFxLeyenda.getChildren().addAll(agua,aguaR,tocado,tocadoR,hundido,hundidoR);
+		
 	}
 	
 	public static void verTableroFx() {
-		tableroFxBorder.getChildren().clear();
+		tableroFxPrincipal.getChildren().clear();
 		marcador();
-		tableroFxBorder.setTop(tableroFxAnchor);
-		tableroFxBorder.setCenter(tableroFxGrid);
+		leyenda();
+		tableroFxPrincipal.setTop(tableroFxMarcador);
+		tableroFxPrincipal.setLeft(tableroFxRejilla);
+		tableroFxPrincipal.setBottom(tableroFxLeyenda);
 		tableroFxStage.setX(50);
-		tableroFxStage.setY(300);
+		tableroFxStage.setY(250);
 		tableroFxStage.close();
-		tableroFxGrid.setGridLinesVisible(true);
-		tableroFxGrid.setHgap(2);
-		tableroFxGrid.setVgap(2);
-		tableroFxGrid.setTranslateX(75.0);
-		tableroFxGrid.setTranslateY(50.0);
+		tableroFxRejilla.setGridLinesVisible(true);
+		tableroFxRejilla.setHgap(2);
+		tableroFxRejilla.setVgap(2);
+		tableroFxRejilla.setTranslateX(50.0);
+		tableroFxRejilla.setTranslateY(20.0);
 		
 		
 		tableroFxStage.setTitle("HUNDIR LA FLOTA");
@@ -104,10 +142,32 @@ public class Tablero {
 			int sizeXY = Tablero.getTablero().length;
 			System.out.println(sizeXY);
 			Rectangle[][] casillasTablero = new Rectangle[sizeXY][sizeXY];
-			
+			Label[][] tableroConCoordenadas = new Label[sizeXY + 1][sizeXY + 1];
+			for (int i = 0; i < tableroConCoordenadas.length; i++) {
+				tableroConCoordenadas[i][0] = new Label();
+				if (i == 0) {   //la coordenada cero debe ser escrita a partir de i=1
+					tableroConCoordenadas[i][0].setText("");
+					} else {tableroConCoordenadas[i][0].setText((i-1)+"");}
+				
+				tableroConCoordenadas[i][0].setFont(Font.font("Arial", FontWeight.BOLD, 12));
+				tableroFxRejilla.getChildren().add(tableroConCoordenadas[i][0]);
+				GridPane.setHalignment(tableroConCoordenadas[i][0], HPos.CENTER);//centra los numeros en la rejilla
+				GridPane.setConstraints(tableroConCoordenadas[i][0], i, 0);
+			}
+			for (int i = 0; i < tableroConCoordenadas.length; i++) {
+				tableroConCoordenadas[0][i] = new Label();
+				if (i == 0) {
+					tableroConCoordenadas[0][i].setText("");
+					} else {tableroConCoordenadas[0][i].setText(" " + (i-1) +" ");}
+				
+				tableroConCoordenadas[0][i].setFont(Font.font("Arial", FontWeight.BOLD, 12));
+				tableroFxRejilla.getChildren().add(tableroConCoordenadas[0][i]);
+				GridPane.setHalignment(tableroConCoordenadas[0][i], HPos.CENTER);
+				GridPane.setConstraints(tableroConCoordenadas[0][i], 0, i);
+			}
 	
-			for (int i = 0; i < casillasTablero.length; i++) {
-				for (int j = 0; j < casillasTablero.length; j++) {
+			for (int i = 0; i < sizeXY; i++) {
+				for (int j = 0; j < sizeXY; j++) {
 					casillasTablero[j][i] = new Rectangle(0,0,25,25);
 					try {
 						casillasTablero[j][i].setFill(Color.BLUE);
@@ -117,8 +177,11 @@ public class Tablero {
 					} catch (NullPointerException e) {
 					}
 					
-					tableroFxGrid.getChildren().add(casillasTablero[j][i]);
-					GridPane.setConstraints(casillasTablero[j][i], j, i);	
+					tableroFxRejilla.getChildren().add(casillasTablero[j][i]);
+					//añadimos +1 porque la fila 0 y la columna 0 del GridPane están ocupadas con las coordenadas del tablero
+					GridPane.setConstraints(casillasTablero[j][i], j+1, i+1);
+					
+																	
 				}
 			}
 			Barco [] flotaGuerra = Partida.getFlotaGuerra();
