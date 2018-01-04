@@ -21,11 +21,9 @@ public class Menu {
 	TextField cantJugadores;
 	String valorString;
 	int valorInt;
-	GridPane tableroFx = new GridPane();
-	Stage tableroFxStage = new Stage();
-	Scene tableroFxScene = new Scene(tableroFx,400,400);
+
 	
-	public void ventanaRecogidaDatos(String texto, boolean esString) {
+	public void ventanaRecogidaDatos(String texto) {
 		window.setX(50);
 		window.setY(100);
 		Label label = new Label(texto);
@@ -36,12 +34,7 @@ public class Menu {
 		valorEntradaDatos.setOnAction(new EventHandler<ActionEvent>() {		 
             @Override
             public void handle(ActionEvent event) {
-            	if (esString) {
-            		valorString = valorEntradaDatos.getText();
-            	} else {
-            		valorInt = Integer.parseInt(valorEntradaDatos.getText());
-            	}
-            	
+            		valorString = valorEntradaDatos.getText();        	
             	stack.getChildren().clear();           
             	window.close();
             }
@@ -56,16 +49,18 @@ public class Menu {
 		window.setTitle("DATOS"); 
 		window.setScene(scene); // Creo la ventana
 		int opcion = 0;
-		ventanaRecogidaDatos("¿Cuantos jugadores participarán? [1 a 4]: ",false);
+		ventanaRecogidaDatos("¿Cuantos jugadores participarán? [1 a 4]: ");
+		valorInt = Integer.parseInt(valorEntradaDatos.getText());
 		opcion = valorInt;
 		while (opcion < 1 || opcion > 4) {
-			ventanaRecogidaDatos("Por favor introduzca un número del 1 al 4: ",false);
+			ventanaRecogidaDatos("Por favor introduzca un número del 1 al 4: ");
+			valorInt = Integer.parseInt(valorEntradaDatos.getText());
 			opcion = valorInt;
 		}
 		Jugador[] resultado = new Jugador[opcion];		
 		for (int i = 0; i < resultado.length; i++) { //recorremos el array resultado para crear la cantidad de jugadores seleccionada
-			ventanaRecogidaDatos("Nombre del jugador " + i + ":", true);
-			resultado[i] = new Jugador(i,valorString); //creamos el jugador con su nombre y directamente lo metemos en el array resultado
+			ventanaRecogidaDatos("Nombre del jugador " + i + ":");
+			resultado[i] = new Jugador(i,valorString.toUpperCase()); //creamos el jugador con su nombre y directamente lo metemos en el array resultado
 		}
 		return resultado;
 	}
@@ -73,9 +68,11 @@ public class Menu {
 	public void ataquePorTurno(Jugador jugador) {	
 		window.setTitle("DATOS"); 
 		window.setScene(scene); // Creo la ventana
-		ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord X", false);
+		ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord X");
+		valorInt = Integer.parseInt(valorEntradaDatos.getText());
 		int x = valorInt;
-		ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord Y", false);
+		ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord Y");
+		valorInt = Integer.parseInt(valorEntradaDatos.getText());
 		int y = valorInt;
 		jugador.atacar(x, y);
 	}
@@ -87,7 +84,7 @@ public class Menu {
 			for (int i = 0; i < jugadores.length; i++) { //vamos rotando a los jugadores para que participen
 				System.out.println("----- Turno del jugador " + jugadores[i].getNombre() + " -----");
 				do {
-					verTableroFx();
+					Tablero.verTableroFx();
 					ataquePorTurno(jugadores[i]);
 					System.out.println("Acierta?: " + jugadores[i].getAciertaUltimoAtaque());
 					if (Partida.comprobarFlotaHundida(Partida.getFlotaGuerra()) == true) {break;}
@@ -95,7 +92,7 @@ public class Menu {
 			}
 			turno++;
 			Tablero.verTablero();
-			verTableroFx();
+			Tablero.verTableroFx();
 			
 			
 		}
@@ -112,64 +109,6 @@ public class Menu {
 	}
 
 	
-	public void verTableroFx() {
-		tableroFxStage.setX(50);
-		tableroFxStage.setY(300);
-		tableroFxStage.close();
-		tableroFx.setGridLinesVisible(true);
-		tableroFx.setHgap(2);
-		tableroFx.setVgap(2);
-		tableroFx.setTranslateX(100.0);
-		tableroFx.setTranslateY(100.0);
-		
-		
-		tableroFxStage.setTitle("HUNDIR LA FLOTA");
-		tableroFxStage.setScene(tableroFxScene);
-		tableroFxStage.show();
-		
-			int sizeXY = Tablero.getTablero().length;
-			System.out.println(sizeXY);
-			Rectangle[][] casillasTablero = new Rectangle[sizeXY][sizeXY];
-			
-	
-			for (int i = 0; i < casillasTablero.length; i++) {
-				for (int j = 0; j < casillasTablero.length; j++) {
-					casillasTablero[j][i] = new Rectangle(0,0,20,20);
-					try {
-						casillasTablero[j][i].setFill(Color.BLUE);
-						if (Tablero.getPosicionEnTablero(i, j).getSize() == 0) {
-							casillasTablero[j][i].setFill(Color.WHITE); //cambiamos j por i pq javaFX las coord x e y estan intercambiadas
-						} 
-					} catch (NullPointerException e) {
-					}
-					
-					tableroFx.getChildren().add(casillasTablero[j][i]);
-					GridPane.setConstraints(casillasTablero[j][i], j, i);	
-				}
-			}
-			Barco [] flotaGuerra = Partida.getFlotaGuerra();
-			
-			for (Barco barco : flotaGuerra) {
-				String [] barcoPos = barco.getPositions();
-				int [] barcoState = barco.getStateForPositions();
-				for (int i = 0; i < barcoState.length; i++) {
-					String [] posicion = barcoPos[i].split("-");
-					int posX = Integer.parseInt(posicion[1]); //invertimos la coord X en javaFx es la Y
-					int posY = Integer.parseInt(posicion[0]);
-					if (barco.getSize() != 0) {
-						System.out.println(barcoState[i]);
-						switch (barcoState[i]) {
-						case 1 :
-							casillasTablero[posX][posY].setFill(Color.BLACK);
-							break;
-						case 2 :
-							casillasTablero[posX][posY].setFill(Color.RED);
-							break;
-						}
-					}
-	
-				}
-			}
-	}
+
 
 }
