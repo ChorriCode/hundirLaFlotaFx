@@ -1,9 +1,10 @@
 package application;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -14,7 +15,7 @@ public class Tablero {
 	
 	static BorderPane tableroFxBorder = new BorderPane();
 	static GridPane tableroFxGrid = new GridPane();
-	static HBox tableroFxHbox = new HBox();
+	static AnchorPane tableroFxAnchor;
 	static Stage tableroFxStage = new Stage();
 	static Scene tableroFxScene = new Scene(tableroFxBorder,400,400);
 
@@ -56,8 +57,30 @@ public class Tablero {
 		}		
 	}
 	
+	public static void marcador() {
+		Jugador[] jugadores = Partida.getParticipantes();
+		Label turno = new Label("TURNO");
+		Label puntuacion = new Label("PUNTUACIÓN");
+		Label jugador1 = new Label(jugadores[0].getNombre() + " :" + jugadores[0].getPuntuacion());
+		Label jugador2 = new Label(jugadores[1].getNombre() + " :" + jugadores[1].getPuntuacion());
+		//turno.prefWidthProperty().bind(tableroFxStage.widthProperty());
+		//puntuacion.prefWidthProperty().bind(tableroFxStage.widthProperty());
+		tableroFxAnchor = new AnchorPane(turno,puntuacion,jugador1,jugador2);
+		tableroFxAnchor.setTopAnchor(turno, 5.0);
+		tableroFxAnchor.setLeftAnchor(turno, 5.0);
+		tableroFxAnchor.setTopAnchor(puntuacion, 5.0);
+		tableroFxAnchor.setRightAnchor(puntuacion, 5.0);
+		
+		tableroFxAnchor.setTopAnchor(jugador1, 15.0);
+		tableroFxAnchor.setRightAnchor(jugador1, 10.0);
+		tableroFxAnchor.setTopAnchor(jugador2, 25.0);
+		tableroFxAnchor.setRightAnchor(jugador2, 10.0);
+	}
+	
 	public static void verTableroFx() {
 		tableroFxBorder.getChildren().clear();
+		marcador();
+		tableroFxBorder.setTop(tableroFxAnchor);
 		tableroFxBorder.setCenter(tableroFxGrid);
 		tableroFxStage.setX(50);
 		tableroFxStage.setY(300);

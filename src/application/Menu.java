@@ -6,10 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Menu {
@@ -34,7 +31,7 @@ public class Menu {
 		valorEntradaDatos.setOnAction(new EventHandler<ActionEvent>() {		 
             @Override
             public void handle(ActionEvent event) {
-            		valorString = valorEntradaDatos.getText();        	
+            	valorString = valorEntradaDatos.getText();        	
             	stack.getChildren().clear();           
             	window.close();
             }
@@ -68,13 +65,34 @@ public class Menu {
 	public void ataquePorTurno(Jugador jugador) {	
 		window.setTitle("DATOS"); 
 		window.setScene(scene); // Creo la ventana
-		ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord X");
-		valorInt = Integer.parseInt(valorEntradaDatos.getText());
-		int x = valorInt;
-		ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord Y");
-		valorInt = Integer.parseInt(valorEntradaDatos.getText());
-		int y = valorInt;
-		jugador.atacar(x, y);
+		boolean error;
+		//el siguiente código es para prevenir que tecleemos algo que no sea un numero cuando nos pide las coordenadas
+		//el primer do while espera a que tanto la x como la y no de error
+		//el do while del interior llega una vez la x es correcta se queda chequeando la y.
+		//si solo pongo un du while y acierto la x pero fallo en la y, me pediría denuevo ambas coordenadas.
+		do {
+			try {
+				ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord X");
+				valorInt = Integer.parseInt(valorEntradaDatos.getText());
+				int x = valorInt;
+				error = false;
+				do {
+					try {
+						ventanaRecogidaDatos("Jugador " + jugador.getNombre() + " ataca coord Y");
+						valorInt = Integer.parseInt(valorEntradaDatos.getText());
+						int y = valorInt;
+						error = false;
+						jugador.atacar(x, y);
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						error = true;
+					}
+				} while (error);
+			} catch (NumberFormatException e) {
+				error = true;
+			}
+
+		} while (error);
 	}
 	
 	public void turnoJugadores(Jugador[] jugadores) {
@@ -87,8 +105,11 @@ public class Menu {
 					Tablero.verTableroFx();
 					ataquePorTurno(jugadores[i]);
 					System.out.println("Acierta?: " + jugadores[i].getAciertaUltimoAtaque());
-					if (Partida.comprobarFlotaHundida(Partida.getFlotaGuerra()) == true) {break;}
-				} while (jugadores[i].getAciertaUltimoAtaque() == true); //si un jugador acierta vuelve a tirar en el mismo turno.
+
+				} while (jugadores[i].getAciertaUltimoAtaque() == true && !Partida.comprobarFlotaHundida(Partida.getFlotaGuerra())); //si un jugador acierta vuelve a tirar en el mismo turno.
+				if (Partida.comprobarFlotaHundida(Partida.getFlotaGuerra()) == true) {
+					System.out.println("hay un break");
+					break;}
 			}
 			turno++;
 			Tablero.verTablero();
