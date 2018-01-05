@@ -17,6 +17,9 @@ public class Jugador {
 	}
 	
 	public void atacar(int x, int y) {
+		if (x == 0) {x = 9;} else {x -= 1;}
+		if (y == 0) {y = 9;} else {y -= 1;} 
+		
 		Barco posicionAtacada = null; // Las posiciones en el tablero contienen barcos o null;
 		posicionAtacada = Tablero.getPosicionEnTablero(x, y);  // posición atacada, ahora comprobar si hay barco o no (null)
 		if (posicionAtacada != null) { //comprobamos si la posición es distanta de agua es que hay barco

@@ -1,13 +1,32 @@
 package application;
 
+import javafx.scene.image.Image;
+
 public class Barco {
 	
-	private String shipType; //submarino(1), fragata(2), acorazado(3)
+	private String shipType; //submarino(1), fragata(2), destructor (3), acorazado(4), portaAviones(5)
 	private int size; //cuantas casillas ocupa el barco
 	private int [] stateForPositions; // 0-oculto, 1-tocado, 2-hundido de cada posicion en el tablero
 	private String [] positions; //es una cadena que contiene las coordenadas "x-y" del barco en el tablero.
 	private boolean hundido = false; //se refuere al estados total del barco, si todas sus casillas están tocadas
-	
+	private Image[][] imagenesBarcos = {
+			{new Image(Main.class.getResourceAsStream("img/1_sub.png"))},
+				{new Image(Main.class.getResourceAsStream("img/2_frag.png")),
+				 new Image(Main.class.getResourceAsStream("img/2_frag.png"))},
+					{new Image(Main.class.getResourceAsStream("img/3_dest.png")),
+					 new Image(Main.class.getResourceAsStream("img/3_dest.png")),
+					 new Image(Main.class.getResourceAsStream("img/3_dest.png"))},
+						{new Image(Main.class.getResourceAsStream("img/4_acor.png")),
+						 new Image(Main.class.getResourceAsStream("img/4_acor.png")),
+						 new Image(Main.class.getResourceAsStream("img/4_acor.png")),
+						 new Image(Main.class.getResourceAsStream("img/4_acor.png"))},
+							{new Image(Main.class.getResourceAsStream("img/5_porta.png")),
+							new Image(Main.class.getResourceAsStream("img/5_porta.png")),
+							new Image(Main.class.getResourceAsStream("img/5_porta.png")),
+							new Image(Main.class.getResourceAsStream("img/5_porta.png")),
+							new Image(Main.class.getResourceAsStream("img/5_porta.png"))}
+			
+	};
 	
 	public Barco(int size) {
 		this.size = size;
@@ -135,6 +154,10 @@ public class Barco {
 
 	public void setPositions(int index, String positions) {
 		this.positions[index] = positions;
+	}
+
+	public Image[][] getImagenesBarcos() {
+		return imagenesBarcos;
 	}
 	
 

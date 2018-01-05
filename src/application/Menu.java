@@ -17,8 +17,8 @@ import javafx.stage.Stage;
 public class Menu {
 	static int turno= 0;	
 	Stage window = new Stage();
-	AnchorPane Anchor = new AnchorPane();
-	Scene scene = new Scene(Anchor);
+	AnchorPane anchor = new AnchorPane();
+	Scene scene = new Scene(anchor);
 	TextField valorEntradaDatos;
 	TextField cantJugadores;
 	String valorString;
@@ -34,25 +34,28 @@ public class Menu {
 		valorEntradaDatos = new TextField();
 		valorEntradaDatos.setAlignment(Pos.CENTER);
 		
-		Anchor.setTopAnchor(label, 0.0);
-		Anchor.setTopAnchor(valorEntradaDatos, 40.0);
-		Anchor.setLeftAnchor(valorEntradaDatos, 20.0);
-		Anchor.setRightAnchor(valorEntradaDatos, 20.0);
-		Anchor.setBottomAnchor(valorEntradaDatos, 20.0);
+		anchor.setTopAnchor(label, 0.0);
+		anchor.setTopAnchor(valorEntradaDatos, 40.0);
+		anchor.setLeftAnchor(valorEntradaDatos, 20.0);
+		anchor.setRightAnchor(valorEntradaDatos, 20.0);
+		anchor.setBottomAnchor(valorEntradaDatos, 20.0);
 	
 		
 
-		Anchor.getChildren().addAll(label, valorEntradaDatos);
+		anchor.getChildren().addAll(label, valorEntradaDatos);
 		valorEntradaDatos.setOnAction(new EventHandler<ActionEvent>() {		 
             @Override
             public void handle(ActionEvent event) {
             	valorString = valorEntradaDatos.getText();        	
-            	Anchor.getChildren().clear();           
+            	anchor.getChildren().clear();           
             	window.close();
+            	
             }
         });
 
 		window.showAndWait();
+		
+
 	}
 
 	
@@ -146,6 +149,7 @@ public class Menu {
 			
 			
 		}
+		Tablero.flotaHundida();
 		System.out.println("*********** Flota Hundida - Fin Partida ***********");
 		// la partida termino buscamos un método que muestre las puntuaciones y el ganador
 		obtenerPuntuacion();
